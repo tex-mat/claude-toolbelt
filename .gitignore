@@ -1,0 +1,12 @@
+# Dependencies (reinstall with: npm install)
+node_modules/
+
+# Build output (rebuild with: npm run package)
+dist/
+
+# Test artifacts
+test-results/
+playwright-report/
+
+# macOS noise
+.DS_Store

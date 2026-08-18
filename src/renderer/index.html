@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Skill Widget</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="collapsed">
+
+  <!-- Slim tab visible while collapsed at the screen edge -->
+  <button id="tab" aria-label="Open skill panel">✦</button>
+
+  <!-- Expanded panel -->
+  <div id="panel" aria-hidden="true">
+    <header>
+      <h1>Skills</h1>
+      <button id="quit" title="Quit Skill Widget">quit</button>
+    </header>
+
+    <input id="search" type="search" placeholder="Search by name or use case…" autocomplete="off" />
+
+    <nav id="buckets" aria-label="Categories"></nav>
+
+    <!-- List view -->
+    <div id="list" class="view"></div>
+
+    <!-- Detail / prepare-prompt view -->
+    <div id="detail" class="view" hidden>
+      <button id="back">‹ back</button>
+      <h2 id="detail-name"></h2>
+      <p id="detail-desc"></p>
+      <code id="detail-invoke"></code>
+      <button id="readmore" hidden>Read more</button>
+      <pre id="doc" hidden></pre>
+      <div id="blanks"></div>
+      <label class="field">
+        <span>Extra context (optional)</span>
+        <textarea id="extra" rows="4" placeholder="Anything else you want in the prompt…"></textarea>
+      </label>
+      <button id="copy">Copy prompt</button>
+      <span id="copied" hidden>Copied ✓ — paste it into Claude Code</span>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

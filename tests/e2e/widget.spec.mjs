@@ -54,6 +54,16 @@ test('extra context is copied as its own paragraph below the command', async () 
   await app.close();
 });
 
+test('the detail view fully replaces the list, search and bucket tabs', async () => {
+  const { app, win } = await launchWidget();
+  await win.click('#tab');
+  await win.click('.entry:has-text("crosspost")');
+  await expect(win.locator('#list')).toBeHidden();
+  await expect(win.locator('#buckets')).toBeHidden();
+  await expect(win.locator('#search')).toBeHidden();
+  await app.close();
+});
+
 test('read more reveals the full skill document and toggles back off', async () => {
   const { app, win } = await launchWidget();
   await win.click('#tab');

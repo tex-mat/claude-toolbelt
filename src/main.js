@@ -9,7 +9,7 @@ const { readDocInside } = require('./lib/safe-read');
 const TOGGLE_HOTKEY = 'Alt+Space'; // ⌥ Option-Space
 
 // Tests point this at a fixture folder; normal runs read the real ~/.claude.
-const CLAUDE_DIR = process.env.SKILL_WIDGET_CLAUDE_DIR || path.join(os.homedir(), '.claude');
+const CLAUDE_DIR = process.env.TOOLBELT_CLAUDE_DIR || path.join(os.homedir(), '.claude');
 
 const COLLAPSED_SIZE = { width: 22, height: 168 };
 const EXPANDED_SIZE = { width: 384, height: 640 };

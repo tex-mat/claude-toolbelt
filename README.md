@@ -1,4 +1,4 @@
-# Skill Widget
+# Claude Toolbelt
 
 A small always-on-top widget pinned to the right edge of the screen. It lists
 every Claude Code skill, plugin, command and agent on this Mac, lets you search
@@ -19,7 +19,7 @@ images anytime with `node scripts/make-screenshots.mjs` (quit the widget first).
 
 ## Run it
 
-Double-click `dist/SkillWidget-darwin-arm64/SkillWidget.app`, or from this folder:
+Double-click `dist/Toolbelt-darwin-arm64/Toolbelt.app`, or from this folder:
 
 ```
 npm start
@@ -101,13 +101,13 @@ How the widget reads these files:
 **The easy way — paste this into Claude Code:**
 
 ```text
-Set up the Skill Widget from https://github.com/tex-mat/skill-widget on this Mac:
+Set up Claude Toolbelt from https://github.com/tex-mat/claude-toolbelt on this Mac:
 
 1. Check git and Node 20+ are available; stop and tell me if not.
-2. Clone the repo to ~/Projects/skill-widget.
+2. Clone the repo to ~/Projects/claude-toolbelt.
 3. Run `npm install` in it (dev dependencies only: electron, @electron/packager,
    vitest, playwright).
-4. Quit any running SkillWidget (it holds the Option-Space hotkey the tests
+4. Quit any running Toolbelt (it holds the Option-Space hotkey the tests
    need), then run `npm test` and show me the real output. Stop if anything fails.
 5. Run `npm run package`, then open the app inside dist/ (folder name ends in
    -arm64 on Apple Silicon, -x64 on Intel) and confirm the process is running.
@@ -120,11 +120,11 @@ Do not install anything else, and don't touch ~/.claude — the app only reads i
 **The manual way:**
 
 1. Install [Node.js](https://nodejs.org) 20 or newer.
-2. `git clone https://github.com/tex-mat/skill-widget ~/Projects/skill-widget`
-3. `cd ~/Projects/skill-widget && npm install`
+2. `git clone https://github.com/tex-mat/claude-toolbelt ~/Projects/claude-toolbelt`
+3. `cd ~/Projects/claude-toolbelt && npm install`
 4. `npm test` — 28 unit tests and 7 app tests should pass.
 5. `npm run package`
-6. Open `dist/SkillWidget-darwin-arm64/SkillWidget.app` (or `-x64` on Intel).
+6. Open `dist/Toolbelt-darwin-arm64/Toolbelt.app` (or `-x64` on Intel).
 7. Optional, start at login: System Settings → General → Login Items → “+” →
    pick the app.
 

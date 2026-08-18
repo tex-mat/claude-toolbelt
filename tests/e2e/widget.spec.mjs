@@ -11,7 +11,7 @@ const fixtureHome = path.join(root, 'tests', 'fixtures', 'claude-home');
 async function launchWidget() {
   const app = await electron.launch({
     args: [root],
-    env: { ...process.env, SKILL_WIDGET_CLAUDE_DIR: fixtureHome },
+    env: { ...process.env, TOOLBELT_CLAUDE_DIR: fixtureHome },
   });
   const win = await app.firstWindow();
   return { app, win };

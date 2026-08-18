@@ -1,15 +1,15 @@
 {
-  "name": "skill-widget",
+  "name": "claude-toolbelt",
   "version": "0.1.0",
   "private": true,
-  "description": "Always-on-top macOS edge widget listing Claude Code skills and commands, with search and copy-to-clipboard prompt preparation.",
+  "description": "Always-on-top macOS edge widget listing Claude Code skills, plugins, commands and agents, with search and copy-to-clipboard prompt preparation.",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "test:unit": "vitest run tests/unit",
     "test:e2e": "playwright test",
     "test": "npm run test:unit && npm run test:e2e",
-    "package": "electron-packager . SkillWidget --platform=darwin --out=dist --overwrite"
+    "package": "electron-packager . Toolbelt --platform=darwin --out=dist --overwrite --ignore=\"tests|dist|docs|playwright.config.mjs|test-results|scripts\""
   },
   "devDependencies": {
     "@electron/packager": "^20.3.0",

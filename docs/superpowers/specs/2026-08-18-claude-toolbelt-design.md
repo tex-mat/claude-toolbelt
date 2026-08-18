@@ -1,6 +1,8 @@
-# Skill Widget — design spec
+# Claude Toolbelt — design spec
 
 Date: 2026-08-18. Approved by Mattia in conversation; spec review waived by user.
+Renamed from "Skill Widget" to "Claude Toolbelt" on 2026-08-18, since it covers
+plugins, commands and agents as well as skills. App bundle: Toolbelt.app.
 
 ## Purpose
 

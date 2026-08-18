@@ -1,5 +1,5 @@
 // Regenerates the README screenshots by driving the real app with Playwright.
-// Usage: quit any running SkillWidget, then  node scripts/make-screenshots.mjs
+// Usage: quit any running Toolbelt, then  node scripts/make-screenshots.mjs
 import { _electron as electron } from 'playwright';
 import path from 'node:path';
 import fs from 'node:fs';

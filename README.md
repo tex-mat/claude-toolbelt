@@ -95,9 +95,6 @@ How the widget reads these files:
 
 ## Set it up on your Mac
 
-> The repo is currently private; these steps work once it's public or for
-> anyone given access.
-
 **The easy way — paste this into Claude Code:**
 
 ```text

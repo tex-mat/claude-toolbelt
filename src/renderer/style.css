@@ -224,6 +224,7 @@ header h1 { font-size: 15px; font-weight: 700; letter-spacing: 0.2px; }
 
 .field { display: flex; flex-direction: column; gap: 4px; }
 .field span { font-size: 11px; font-weight: 600; color: var(--text-dim); }
+.field .usage { font-size: 11px; font-weight: 400; font-style: italic; color: var(--text-dim); }
 
 .blank-input, #extra {
   width: 100%;

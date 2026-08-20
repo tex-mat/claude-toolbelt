@@ -97,6 +97,51 @@ test('registers the global hotkey and toggling it opens and closes the panel', a
   await app.close();
 });
 
+test('the input box explains how the argument is used in the file', async () => {
+  const { app, win } = await launchWidget();
+  await win.click('#tab');
+  await win.click('.bucket-btn:has-text("Commands")');
+  await win.click('.entry:has-text("ship")');
+  await expect(win.locator('.field .usage')).toHaveText(
+    'Used as: “Commit everything with message: ___”'
+  );
+  await app.close();
+});
+
+test('numbered arguments each explain their own position', async () => {
+  const { app, win } = await launchWidget();
+  await win.click('#tab');
+  await win.click('.bucket-btn:has-text("Plugins")');
+  await win.click('.entry:has-text("plug-a:bar")');
+  const usages = win.locator('.field .usage');
+  await expect(usages).toHaveText([
+    'Used as: “Compare ___ against $2 and report differences.”',
+    'Used as: “Compare $1 against ___ and report differences.”',
+  ]);
+  await app.close();
+});
+
+test('a skill whose only dollar signs are prices and code asks for nothing', async () => {
+  const { app, win } = await launchWidget();
+  await win.click('#tab');
+  await expect(win.locator('.entry:has-text("pricing") .badge')).toHaveCount(0);
+  await win.click('.entry:has-text("pricing")');
+  await expect(win.locator('.blank-input')).toHaveCount(0);
+  await expect(win.locator('.field .usage')).toHaveCount(0);
+  await app.close();
+});
+
+test('agents show where the words land in the prompt that gets copied', async () => {
+  const { app, win } = await launchWidget();
+  await win.click('#tab');
+  await win.click('.bucket-btn:has-text("Agents")');
+  await win.click('.entry:has-text("code-reviewer")');
+  await expect(win.locator('.field .usage')).toHaveText(
+    'Used as: “Use the code-reviewer agent to ___”'
+  );
+  await app.close();
+});
+
 test('agents copy as a plain-words request instead of a slash command', async () => {
   const { app, win } = await launchWidget();
   await win.click('#tab');

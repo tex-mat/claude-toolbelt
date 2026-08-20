@@ -39,9 +39,11 @@ holds the ⌥-Space hotkey, which makes the hotkey test fail.
 
 1. Pick a bucket (Skills / Plugins / Commands / Agents) or just search —
    search looks across everything by name and description.
-2. Click an entry. Fill in any "needs input" blanks, optionally add extra
-   context below. **Read more** shows the entry's full document if the
-   one-line description isn't enough.
+2. Click an entry. Each "needs input" blank shows the sentence from the
+   skill file where your text will land ("Used as: …"), so you know what
+   to type. Fill in the blanks, optionally add extra context below.
+   **Read more** shows the entry's full document if the one-line
+   description isn't enough.
 3. Hit **Copy prompt**, then paste into Claude Code and press enter.
 
 ## Wiring up your own skills

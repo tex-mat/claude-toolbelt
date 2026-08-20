@@ -29,16 +29,118 @@ function parseFrontmatter(content) {
   return { ok: false, attrs: {} }; // fence never closed
 }
 
-// Works out whether an entry needs user input, and what to call each blank.
+// Longest usage snippet we show under an input box before trimming.
+const MAX_USAGE_CHARS = 160;
+
+// A genuine numbered placeholder, $1 to $9. The lookahead refuses to match
+// inside a price — $125/hr, $5,000, $50k, $100.00 are money, not arguments.
+const NUMBERED_PLACEHOLDER = /\$([1-9])(?!\d|[.,]\d)/g;
+
+// Splits a file into lines with code taken out: fenced blocks become blank
+// lines and inline `code` spans are dropped, while line positions stay put.
+// Code samples are full of things that look like arguments but are not —
+// database parameters (WHERE email = $1), shell fields (awk '{print $1}').
+function proseLines(content) {
+  let inFence = false;
+  return content.split('\n').map((line) => {
+    if (/^\s*(```|~~~)/.test(line)) {
+      inFence = !inFence;
+      return '';
+    }
+    if (inFence) return '';
+    return line.replace(/`[^`]*`/g, '');
+  });
+}
+
+// Matches one specific placeholder, keeping the no-prices rule for numbers.
+function placeholderRegex(token, flags) {
+  const notMoney = token === '$ARGUMENTS' ? '' : '(?!\\d|[.,]\\d)';
+  return new RegExp('\\' + token + notMoney, flags);
+}
+
+// Tidies a snippet for display: markdown decoration off, whitespace collapsed.
+function tidy(text) {
+  return text
+    .replace(/[`*]/g, '')
+    .replace(/^[#>\-\s]+/, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// The block of text around line `i`, joined into one string so a sentence
+// that wraps over several lines stays whole. Headings end the block, because
+// a heading is a label for what follows rather than part of the sentence.
+function blockAround(lines, i) {
+  const isHeading = (line) => /^\s*#+\s/.test(line);
+  let start = i;
+  while (start > 0 && lines[start - 1].trim() && !isHeading(lines[start - 1])) start--;
+  let end = i;
+  while (end < lines.length - 1 && lines[end + 1].trim() && !isHeading(lines[end + 1])) end++;
+  return lines.slice(start, end + 1).join(' ');
+}
+
+// The nearest heading at or above line `i`, used when the placeholder sits
+// on a line of its own and the surrounding text explains nothing.
+function headingAbove(lines, i) {
+  for (let j = i; j >= 0; j--) {
+    const match = lines[j].match(/^\s*#+\s+(.+)$/);
+    if (match) return tidy(match[1]);
+  }
+  return null;
+}
+
+// Explains where a placeholder is used, as the sentence around it with the
+// placeholder shown as a blank ("___") so the user sees where their words go.
+function usageFor(content, token) {
+  const lines = content.split('\n');
+  const prose = proseLines(content);
+  const found = placeholderRegex(token);
+  const i = prose.findIndex((line) => found.test(line));
+  if (i === -1) return null;
+
+  const block = blockAround(lines, i);
+  const sentences = block.split(/(?<=[.!?])\s+/);
+  const sentence = sentences.find((s) => found.test(s)) || block;
+
+  let text = tidy(sentence).replace(placeholderRegex(token, 'g'), '___');
+
+  // A line holding nothing but the placeholder says nothing on its own,
+  // so name the section it belongs to instead.
+  if (text === '___') {
+    const heading = headingAbove(lines, i);
+    if (!heading) return null;
+    text = `${heading}: ___`;
+  }
+
+  // Very long snippets get trimmed to a window around the blank.
+  if (text.length > MAX_USAGE_CHARS) {
+    const idx = text.indexOf('___');
+    const start = Math.max(0, idx - Math.floor(MAX_USAGE_CHARS / 2));
+    const slice = text.slice(start, start + MAX_USAGE_CHARS);
+    text = (start > 0 ? '…' : '') + slice + (start + MAX_USAGE_CHARS < text.length ? '…' : '');
+  }
+  return text;
+}
+
+// Works out whether an entry needs user input, what to call each blank,
+// and the sentence in the file where each blank is used. Placeholders inside
+// code samples are ignored — they belong to the example, not to the user.
 function detectInput(content, attrs) {
-  const numbered = new Set(content.match(/\$[1-9]/g) || []);
+  const prose = proseLines(content).join('\n');
+
+  const numbered = new Set(prose.match(NUMBERED_PLACEHOLDER) || []);
   if (numbered.size > 0) {
-    const blanks = [...numbered].sort().map((p) => `argument ${p.slice(1)}`);
+    const blanks = [...numbered]
+      .sort()
+      .map((p) => ({ label: `argument ${p.slice(1)}`, usage: usageFor(content, p) }));
     return { needsInput: true, blanks };
   }
   const hint = attrs['argument-hint'];
-  if (content.includes('$ARGUMENTS') || hint) {
-    return { needsInput: true, blanks: [hint || 'input'] };
+  if (prose.includes('$ARGUMENTS') || hint) {
+    return {
+      needsInput: true,
+      blanks: [{ label: hint || 'input', usage: usageFor(content, '$ARGUMENTS') }],
+    };
   }
   return { needsInput: false, blanks: [] };
 }
@@ -150,7 +252,13 @@ function scanAgentsDir(dir) {
   return files.map((file) => {
     const name = file.replace(/\.md$/, '');
     const entry = readEntry(path.join(dir, file), name, `Use the ${name} agent to`, 'agent');
-    return { ...entry, needsInput: true, blanks: ['what it should do'] };
+    // Agents take plain words, so show the shape of the sentence the user
+    // will paste, with their words in place.
+    return {
+      ...entry,
+      needsInput: true,
+      blanks: [{ label: 'what it should do', usage: `${entry.invoke} ___` }],
+    };
   });
 }
 

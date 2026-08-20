@@ -155,16 +155,24 @@ function showDetail(entry) {
 
   const blanks = el('blanks');
   blanks.replaceChildren();
-  entry.blanks.forEach((label, i) => {
+  entry.blanks.forEach((blank, i) => {
     const field = document.createElement('label');
     field.className = 'field';
     const caption = document.createElement('span');
-    caption.textContent = label;
+    caption.textContent = blank.label;
     const input = document.createElement('input');
     input.className = 'blank-input';
     input.type = 'text';
     input.dataset.index = String(i);
     field.append(caption, input);
+    // Show the sentence from the file where this argument is used,
+    // so the user knows what to type. textContent keeps it safe.
+    if (blank.usage) {
+      const usage = document.createElement('div');
+      usage.className = 'usage';
+      usage.textContent = `Used as: “${blank.usage}”`;
+      field.appendChild(usage);
+    }
     blanks.appendChild(field);
   });
 

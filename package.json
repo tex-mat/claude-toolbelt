@@ -2,6 +2,7 @@
   "name": "claude-toolbelt",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "description": "Always-on-top macOS edge widget listing Claude Code skills, plugins, commands and agents, with search and copy-to-clipboard prompt preparation.",
   "main": "src/main.js",
   "scripts": {

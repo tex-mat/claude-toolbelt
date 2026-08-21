@@ -105,6 +105,18 @@ describe('detectInput', () => {
     expect(out.blanks[0].usage).toBe('Audit ___ for under $5,000.');
   });
 
+  test('ignores a whole-dollar price like "$5 of free credits" when no $1 exists', () => {
+    // Real case: the Vercel ai-gateway skill says "Every Vercel team gets
+    // **$5 of free AI Gateway credits per month**" — money, not argument 5.
+    const out = detectInput('Every team gets **$5 of free credits per month**.', {});
+    expect(out).toEqual({ needsInput: false, blanks: [] });
+  });
+
+  test('a higher number with no $1 anywhere is a price, not an argument', () => {
+    const out = detectInput('Ship it for $9 flat.', {});
+    expect(out.needsInput).toBe(false);
+  });
+
   test('joins a sentence that wraps over several lines', () => {
     const out = detectInput(
       'Target file: `docs/A.md` unless $ARGUMENTS names a different path, focus\narea, or diagram type — honour it.',

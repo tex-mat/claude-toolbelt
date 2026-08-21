@@ -129,7 +129,10 @@ function detectInput(content, attrs) {
   const prose = proseLines(content).join('\n');
 
   const numbered = new Set(prose.match(NUMBERED_PLACEHOLDER) || []);
-  if (numbered.size > 0) {
+  // Positional arguments always start at $1. A higher number with no $1
+  // anywhere in the file is money the price rule missed — "$5 of free
+  // credits", "$9 flat" — not argument 5.
+  if (numbered.size > 0 && numbered.has('$1')) {
     const blanks = [...numbered]
       .sort()
       .map((p) => ({ label: `argument ${p.slice(1)}`, usage: usageFor(content, p) }));
